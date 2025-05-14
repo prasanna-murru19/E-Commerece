@@ -1,13 +1,13 @@
 <?php
-include('../includes/db.php');  // Database connection
+include('../includes/db.php');  
 session_start();
 
 if (isset($_POST['register'])) {
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password
-    $role = 'user'; // Default role for users
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
+    $role = 'user';
 
-    // Check if the email already exists
+   
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -15,13 +15,13 @@ if (isset($_POST['register'])) {
     if ($user) {
         echo "<script>alert('Email is already registered!');</script>";
     } else {
-        // Insert new user
+        
         $stmt = $conn->prepare("INSERT INTO users (email, password, role) VALUES (?, ?, ?)");
         $stmt->execute([$email, $password, $role]);
 
-        // Log the user in after successful registration
+       
         $_SESSION['user_id'] = $conn->lastInsertId();
-        header("Location: ../index.php"); // Redirect to the homepage
+        header("Location: ../index.php"); 
         exit();
     }
 }
