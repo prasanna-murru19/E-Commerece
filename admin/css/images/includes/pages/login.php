@@ -1,23 +1,23 @@
 <?php
-include('../includes/db.php');  // Corrected path to db.php
+include('../includes/db.php');  
 session_start();
 
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Prepare the SQL query
+   
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user['password'])) {
-        // Successful login
-        $_SESSION['user_id'] = $user['id']; // Store user ID in session
-        header("Location: ../index.php"); // Redirect to the main page
+        
+        $_SESSION['user_id'] = $user['id']; 
+        header("Location: ../index.php"); 
         exit();
     } else {
-        // Invalid login
+        
         $error_message = "Invalid email or password.";
     }
 }
