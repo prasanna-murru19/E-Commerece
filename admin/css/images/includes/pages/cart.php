@@ -7,53 +7,52 @@ if (!isset($_SESSION['user_id'])) {
 
 include '../includes/db.php';
 
-$user_id = $_SESSION['user_id'];  // Assuming user ID is stored in session
+$user_id = $_SESSION['user_id'];  
 
-// Handle Add to Cart with Quantity
 if (isset($_POST['add_to_cart'])) {
     $product_id = $_POST['product_id'];
-    $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;  // Default to 1 if quantity is not set
+    $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;  
 
-    // Check if product is already in the user's cart
+    
     $stmt = $conn->prepare("SELECT * FROM cart WHERE user_id = ? AND product_id = ?");
     $stmt->execute([$user_id, $product_id]);
     $cart_item = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($cart_item) {
-        // Update quantity if the product is already in the cart
+        
         $new_quantity = $cart_item['quantity'] + $quantity;
         $stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ?");
         $stmt->execute([$new_quantity, $user_id, $product_id]);
     } else {
-        // Add new product to the cart
+        
         $stmt = $conn->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)");
         $stmt->execute([$user_id, $product_id, $quantity]);
     }
 }
 
-// Handle Product Removal from Cart
+
 if (isset($_POST['remove_from_cart'])) {
     $product_id = $_POST['product_id'];
     $stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ? AND product_id = ?");
     $stmt->execute([$user_id, $product_id]);
 }
 
-// Handle Quantity Update
+
 if (isset($_POST['update_quantity'])) {
     $product_id = $_POST['product_id'];
     $quantity = (int)$_POST['quantity'];
 
-    // Update the quantity in the cart
+   
     $stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ?");
     $stmt->execute([$quantity, $user_id, $product_id]);
 }
 
-// Fetch the user's cart items
+
 $stmt = $conn->prepare("SELECT * FROM cart WHERE user_id = ?");
 $stmt->execute([$user_id]);
 $cart_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$total_cost = 0;  // Initialize total cost variable
+$total_cost = 0;  
 ?>
 <!DOCTYPE html>
 <html lang="en">
