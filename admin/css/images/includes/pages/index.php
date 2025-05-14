@@ -1,23 +1,23 @@
 <?php
-// Start the session and check if the user is logged in
+
 session_start();
 
-// Logout Logic - placed at the top of the script
+
 if (isset($_POST['logout'])) {
-    session_unset(); // Remove all session variables
-    session_destroy(); // Destroy the session
-    header("Location: pages/login.php"); // Redirect to login page
-    exit(); // Make sure no further code is executed after redirection
+    session_unset(); 
+    session_destroy(); 
+    header("Location: pages/login.php");
+    exit(); 
 }
 
-// Check if the user is logged in
+
 if (!isset($_SESSION['user_id'])) {
-    // If not logged in, redirect to the login page
+    
     header("Location: pages/login.php");
     exit();
 }
 
-// Fetch products from the database
+
 include 'includes/db.php';
 $stmt = $conn->query("SELECT * FROM products");
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
